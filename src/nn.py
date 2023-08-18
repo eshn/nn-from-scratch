@@ -38,37 +38,50 @@ class Dense:
             return 1 / (1 + np.exp(-x))
         else:
             return -1
+    
+    def grad_activation(self, x): # gradients of activation functions
+        if self.activation is None:
+            return np.ones(x.shape)
+        elif self.activation == 'relu':
+            return np.heaviside(x, 0) # setting gradient to zero at non-differentiable point
+        elif self.activation == 'tanh':
+            return np.ones(x.shape) - (np.tanh(x) * np.tanh(x)) # derivative is 1 - tanh^2(x)
+        elif self.activation == 'sigmoid':
+            return x * (np.ones(x.shape) - x) # derivative is x(1-x)
+        else:
+            return 0
+
 
     def forward(self, x):
         self.x = self.eval_activation(np.dot(self.weights.T, x) + self.bias)
         return self.x
         
 
-# build a 3 layer network: 
+if __name__ == '__main__':
+    # build a 3 layer network: 
+    input_size = 3
 
-input_size = 3
+    x = np.array([3,1,5])
 
-x = np.array([3,1,5])
-
-input0 = Dense(n_inputs=3, n_neurons=2, weight_init='Gaussian', activation='relu')
-hidden1 = Dense(n_inputs=2, n_neurons=4, weight_init='Gaussian', activation='relu')
-hidden2 = Dense(n_inputs=4, n_neurons=6, weight_init='Gaussian', activation='relu')
-hidden3 = Dense(n_inputs=6, n_neurons=6, weight_init='Gaussian', activation='relu')
-hidden4 = Dense(n_inputs=6, n_neurons=4, weight_init='Gaussian', activation='relu')
-out0 = Dense(n_inputs=4, n_neurons=1, weight_init='Gaussian', activation='sigmoid')
+    input0 = Dense(n_inputs=3, n_neurons=2, weight_init='Gaussian', activation='relu')
+    hidden1 = Dense(n_inputs=2, n_neurons=4, weight_init='Gaussian', activation='relu')
+    hidden2 = Dense(n_inputs=4, n_neurons=6, weight_init='Gaussian', activation='relu')
+    hidden3 = Dense(n_inputs=6, n_neurons=6, weight_init='Gaussian', activation='relu')
+    hidden4 = Dense(n_inputs=6, n_neurons=4, weight_init='Gaussian', activation='relu')
+    out0 = Dense(n_inputs=4, n_neurons=1, weight_init='Gaussian', activation='sigmoid')
 
 
-y = input0.forward(x)
-print(y)
-y = hidden1.forward(y)
-print(y)
-y = hidden2.forward(y)
-print(y)
-y = hidden3.forward(y)
-print(y)
-y = hidden4.forward(y)
-print(y)
-y = out0.forward(y)
-print(y)
+    y = input0.forward(x)
+    print(y)
+    y = hidden1.forward(y)
+    print(y)
+    y = hidden2.forward(y)
+    print(y)
+    y = hidden3.forward(y)
+    print(y)
+    y = hidden4.forward(y)
+    print(y)
+    y = out0.forward(y)
+    print(y)
 
 
